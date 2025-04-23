@@ -22,12 +22,51 @@
 <body>
     <iframe id="webview" src="https://whatcomesnextllc.ai/log"></iframe>
     <script>
-        // Handle token injection from native layer
+        // Debug logging
+        console.log('[Spark Debug] App Launch');
+        
+        // Handle first launch and token management
         window.addEventListener('load', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const token = urlParams.get('token');
-            if (token) {
-                document.getElementById('webview').src = `https://whatcomesnextllc.ai/log?token=${token}`;
+            const isFirstLaunch = !localStorage.getItem('spark_initialized');
+            console.log('[Spark Debug] First Launch:', isFirstLaunch);
+            
+            if (isFirstLaunch) {
+                // First launch - go to onboarding
+                console.log('[Spark Debug] Redirecting to onboarding');
+                document.getElementById('webview').src = 'https://whatcomesnextllc.ai/onboard';
+                
+                // Listen for successful onboarding
+                window.addEventListener('message', (event) => {
+                    if (event.origin === 'https://whatcomesnextllc.ai' && 
+                        event.data.type === 'onboarding_complete' && 
+                        event.data.token) {
+                        
+                        console.log('[Spark Debug] Onboarding complete, token received');
+                        // Store token and mark as initialized
+                        localStorage.setItem('spark_token', event.data.token);
+                        localStorage.setItem('spark_initialized', 'true');
+                        
+                        // Redirect to log with token
+                        document.getElementById('webview').src = 
+                            `https://whatcomesnextllc.ai/log?token=${event.data.token}`;
+                    }
+                });
+            } else {
+                // Not first launch - use stored token
+                const storedToken = localStorage.getItem('spark_token');
+                const urlParams = new URLSearchParams(window.location.search);
+                const urlToken = urlParams.get('token');
+                
+                console.log('[Spark Debug] Stored Token:', !!storedToken);
+                console.log('[Spark Debug] URL Token:', !!urlToken);
+                
+                // Use URL token if present, otherwise use stored token
+                const token = urlToken || storedToken;
+                if (token) {
+                    console.log('[Spark Debug] Using token for log access');
+                    document.getElementById('webview').src = 
+                        `https://whatcomesnextllc.ai/log?token=${token}`;
+                }
             }
         });
     </script>

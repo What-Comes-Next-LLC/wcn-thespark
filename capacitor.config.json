@@ -1,0 +1,13 @@
+{
+  "appId": "com.whatcomesnext.spark",
+  "appName": "The Spark",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https",
+    "allowNavigation": ["*whatcomesnextllc.ai*"],
+    "url": "https://whatcomesnextllc.ai/log"
+  },
+  "android": {
+    "allowMixedContent": true
+  }
+} 
