@@ -5,7 +5,7 @@
   "server": {
     "androidScheme": "https",
     "allowNavigation": ["*whatcomesnextllc.ai*"],
-    "url": "https://whatcomesnextllc.ai/log"
+    "url": "file:///android_asset/public/index.html"
   },
   "android": {
     "allowMixedContent": true

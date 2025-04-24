@@ -20,47 +20,31 @@
     </style>
 </head>
 <body>
-    <iframe id="webview" src="https://whatcomesnextllc.ai/log"></iframe>
+    <iframe id="webview" src="auth.html"></iframe>
     <script type="module" src="js/config.js"></script>
     <script type="module" src="js/secure-storage.js"></script>
     <script type="module" src="js/auth-service.js"></script>
-    <script type="module" src="js/webview-bridge-debug.js"></script>
-    <script>
-        // Debug logging
-        console.log('[Spark Debug] App Launch');
-        
-        // Handle first launch and token management
-        window.addEventListener('load', async () => {
-            const isFirstLaunch = !(await window.SecureStorageService.get('initialized'));
-            console.log('[Spark Debug] First Launch:', isFirstLaunch);
-            
-            if (isFirstLaunch) {
-                // First launch - go to onboarding
-                console.log('[Spark Debug] Redirecting to onboarding');
-                document.getElementById('webview').src = 'https://whatcomesnextllc.ai/onboard';
-            } else {
-                // Not first launch - check both tokens
-                const storedToken = await window.SecureStorageService.get('token');
-                const supabaseToken = await window.AuthService.getCurrentToken();
-                const urlParams = new URLSearchParams(window.location.search);
-                const urlToken = urlParams.get('token');
-                
-                console.log('[Spark Debug] Stored Token:', !!storedToken);
-                console.log('[Spark Debug] Supabase Token:', !!supabaseToken);
-                console.log('[Spark Debug] URL Token:', !!urlToken);
-                
-                // Use URL token if present, otherwise use stored token
-                const token = urlToken || storedToken;
-                if (token) {
-                    console.log('[Spark Debug] Using token for log access');
-                    window.WebViewBridge.sendMessage('auth_token', token);
-                }
-                
-                // If we have a Supabase token, send it as well
-                if (supabaseToken) {
-                    window.WebViewBridge.sendMessage('supabase_token', supabaseToken);
-                }
+    <script type="module" src="js/webview-bridge.js"></script>
+    <script type="module">
+        import { authService } from './js/auth-service.js';
+        import { webViewBridge } from './js/webview-bridge.js';
+
+        // Initialize auth service
+        authService.initialize();
+
+        // Handle messages from the WebView
+        webViewBridge.on('auth_success', async (data) => {
+            if (data.token) {
+                // Store the token
+                await secureStorage.setItem('token', data.token);
+                // Redirect to the main app
+                document.getElementById('webview').src = 'https://whatcomesnextllc.ai/log';
             }
+        });
+
+        webViewBridge.on('forgot_password', () => {
+            // Handle forgot password flow
+            console.log('Forgot password requested');
         });
     </script>
 </body>
