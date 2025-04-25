@@ -35,23 +35,83 @@
     .button:hover {
       background-color: #9cc5a1;
     }
+    input[type="file"] {
+      display: none;
+    }
   </style>
 </head>
 <body>
   <h1>Welcome to The Spark Logger</h1>
-  <button class="button" onclick="takePicture()">📸 Take a Picture</button>
-  <button class="button" onclick="uploadFile()">📁 Upload a File</button>
+  <button id="uploadBtn" class="button">📁 Upload a File</button>
+  <input type="file" id="fileInput" accept="image/*" />
 
-  <script>
-    function takePicture() {
-      alert("📸 Stub: Launch Camera Flow (Coming Soon)");
-      // Later: navigator.mediaDevices.getUserMedia() or Capacitor Camera API
-    }
+  <script type="module">
+    import { SUPABASE_URL, SUPABASE_ANON_KEY } from './js/config.js';
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-    function uploadFile() {
-      alert("📁 Stub: Launch File Picker (Coming Soon)");
-      // Later: input type="file" flow to Supabase Storage or equivalent
-    }
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const uploadBtn = document.getElementById('uploadBtn');
+    const fileInput = document.getElementById('fileInput');
+
+    uploadBtn.addEventListener('click', () => {
+      fileInput.click();
+    });
+
+    fileInput.addEventListener('change', async (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+
+      if (userError || !user) {
+        alert("User not authenticated.");
+        return;
+      }
+
+      const userId = user.id;
+      const path = `${userId}/${Date.now()}_${file.name}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("spark-uploads")
+        .upload(path, file, {
+          cacheControl: "3600",
+          upsert: false
+        });
+
+      if (uploadError) {
+        alert("Upload failed: " + uploadError.message);
+        return;
+      }
+
+      const { data: signedUrlData } = await supabase.storage
+        .from("spark-uploads")
+        .createSignedUrl(path, 60 * 60); // 1 hour signed URL
+
+      const metadata = {
+        name: file.name,
+        type: file.type,
+        size: file.size
+      };
+
+      const { error: dbError } = await supabase
+        .from("uploads")
+        .insert([
+          {
+            user_id: userId,
+            image_url: signedUrlData?.signedUrl || "",
+            metadata: metadata,
+            sync_status: "uploaded"
+          }
+        ]);
+
+      if (dbError) {
+        alert("Upload stored but database insert failed.");
+        return;
+      }
+
+      alert("✅ File uploaded successfully!");
+    });
   </script>
 </body>
 </html>
