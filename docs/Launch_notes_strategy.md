@@ -50,13 +50,27 @@ only a founder building the conditions for a future team that deserves to exist.
 
 ---
 
+## Lessons Learned: File Upload, Storage Policies, and Full System Debugging
+
+- **Storage ≠ Database**: Supabase Storage file upload and Postgres metadata inserts are two different operations; both require their own security policies.
+- **Default Supabase Storage policies are folder-based**: but custom simpler policies (bucket-only checks) are more appropriate when users upload to `/user_id/filename` structure.
+- **400 POST errors indicate storage policy or contentType mismatches**: explicitly setting `contentType: file.type` during upload prevents silent WebView issues.
+- **RLS (Row Level Security) must be checked both on database table AND storage bucket separately**: one successful insert doesn't imply success for the other.
+- **Verbose logging saves hours**: dumping objects before insert catches type mismatches and undefined fields immediately.
+- **Emotional Regulation Matters**: Recognizing when a sigh of relief (time extension) arrives is just as important as technical debugging.
+
+---
+
 ## Future Standing Orders
 
 - No production deployment without root database validation.
 - No auth architecture modification without written proposal.
 - No rearchitecting bridges without API-level impact analysis.
+- No storage bucket created without immediate accompanying storage policies.
+- No Storage uploads attempted without verifying explicit contentType definition.
 
 ---
 
 End of Phase One.  
 Next: Build a team that deserves to inherit this infrastructure.
+
