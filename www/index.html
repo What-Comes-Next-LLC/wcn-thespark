@@ -1,51 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>The Spark</title>
-    <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            width: 100%;
-            overflow: hidden;
-        }
-        #webview {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Spark - Splash</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #216869;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .logo {
+      width: 60%;
+      max-width: 400px;
+      animation: fadeIn 2s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
 </head>
 <body>
-    <iframe id="webview" src="auth.html"></iframe>
-    <script type="module" src="js/config.js"></script>
-    <script type="module" src="js/secure-storage.js"></script>
-    <script type="module" src="js/auth-service.js"></script>
-    <script type="module" src="js/webview-bridge.js"></script>
-    <script type="module">
-        import { authService } from './js/auth-service.js';
-        import { webViewBridge } from './js/webview-bridge.js';
-
-        // Initialize auth service
-        authService.initialize();
-
-        // Handle messages from the WebView
-        webViewBridge.on('auth_success', async (data) => {
-            if (data.token) {
-                // Store the token
-                await secureStorage.setItem('token', data.token);
-                // Redirect to the main app
-                document.getElementById('webview').src = 'https://whatcomesnextllc.ai/log';
-            }
-        });
-
-        webViewBridge.on('forgot_password', () => {
-            // Handle forgot password flow
-            console.log('Forgot password requested');
-        });
-    </script>
+  <img class="logo" src=".\assets\images\logo-official.png" alt="What Comes Next Logo" />
+  <script>
+    setTimeout(() => {
+      window.location.href = "auth.html";
+    }, 2500); // 2.5s delay
+  </script>
 </body>
-</html> 
+</html>
