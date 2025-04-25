@@ -2,42 +2,55 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Logger</title>
+  <title>Logger - The Spark</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      margin: 0;
+      background-color: #216869;
+      font-family: 'Helvetica Neue', sans-serif;
+      color: #dce1de;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    h1 {
+      margin-bottom: 2rem;
+    }
+    .button {
+      background-color: #49a078;
+      border: none;
+      color: white;
+      padding: 1rem 2rem;
+      margin: 1rem;
+      border-radius: 8px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      width: 80%;
+      max-width: 300px;
+    }
+    .button:hover {
+      background-color: #9cc5a1;
+    }
+  </style>
 </head>
 <body>
   <h1>Welcome to The Spark Logger</h1>
-  <div id="user-info">Loading user...</div>
+  <button class="button" onclick="takePicture()">📸 Take a Picture</button>
+  <button class="button" onclick="uploadFile()">📁 Upload a File</button>
 
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-    import { SUPABASE_URL, SUPABASE_ANON_KEY } from './js/config.js';
+  <script>
+    function takePicture() {
+      alert("📸 Stub: Launch Camera Flow (Coming Soon)");
+      // Later: navigator.mediaDevices.getUserMedia() or Capacitor Camera API
+    }
 
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    const token = new URLSearchParams(window.location.search).get('token');
-
-    if (!token) {
-      document.getElementById('user-info').innerText = "No token provided.";
-    } else {
-      (async () => {
-        try {
-          await supabase.auth.setSession({
-            access_token: token,
-            refresh_token: '' // Not needed for this flow
-          });
-
-          const { data: { user } } = await supabase.auth.getUser();
-
-          if (user) {
-            document.getElementById('user-info').innerText = `Logged in as: ${user.email}`;
-          } else {
-            document.getElementById('user-info').innerText = "Failed to fetch user.";
-          }
-        } catch (err) {
-          console.error("Logger error:", err);
-          document.getElementById('user-info').innerText = "Error loading user data.";
-        }
-      })();
+    function uploadFile() {
+      alert("📁 Stub: Launch File Picker (Coming Soon)");
+      // Later: input type="file" flow to Supabase Storage or equivalent
     }
   </script>
 </body>

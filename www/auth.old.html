@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login</title>
+</head>
+<body>
+  <h1>Login to The Spark</h1>
+  <input type="email" id="email" placeholder="Email" />
+  <input type="password" id="password" placeholder="Password" />
+  <button id="login-btn">Login</button>
+
+  <script type="module">
+    import { supabase } from './js/auth-service.js';
+
+    document.getElementById('login-btn').addEventListener('click', async () => {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+      if (error) {
+        alert("Login failed: " + error.message);
+        return;
+      }
+
+      const token = data.session.access_token;
+      console.log("Token received:", token);
+
+      window.location.href = `logger.html?token=${token}`;
+    });
+  </script>
+</body>
+</html>

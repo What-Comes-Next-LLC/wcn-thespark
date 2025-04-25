@@ -2,32 +2,93 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Login</title>
+  <title>Login - The Spark</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      margin: 0;
+      background-color: #216869;
+      font-family: 'Helvetica Neue', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      color: #dce1de;
+    }
+    .logo {
+      width: 140px;
+      margin-bottom: 1rem;
+    }
+    .form-container {
+      background: rgba(0, 0, 0, 0.2);
+      padding: 2rem;
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      width: 90%;
+      max-width: 400px;
+    }
+    .form-container h2 {
+      margin-top: 0;
+      margin-bottom: 1rem;
+      font-size: 1.4rem;
+      text-align: center;
+    }
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+    button {
+      width: 100%;
+      padding: 0.75rem;
+      font-size: 1rem;
+      background-color: #49a078;
+      border: none;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #9cc5a1;
+    }
+  </style>
 </head>
 <body>
-  <h1>Login to The Spark</h1>
-  <input type="email" id="email" placeholder="Email" />
-  <input type="password" id="password" placeholder="Password" />
-  <button id="login-btn">Login</button>
+  <img class="logo" src="./assets/images/logo-official.png" alt="Logo" />
+  <div class="form-container">
+    <h2>Welcome back</h2>
+    <form id="login-form">
+      <input type="email" id="email" placeholder="Email" required />
+      <input type="password" id="password" placeholder="Password" required />
+      <button type="submit">Log In</button>
+    </form>
+  </div>
 
   <script type="module">
-    import { supabase } from './js/auth-service.js';
+    import { SUPABASE_URL, SUPABASE_ANON_KEY } from './js/config.js';
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-    document.getElementById('login-btn').addEventListener('click', async () => {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    document.getElementById("login-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
 
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
       if (error) {
         alert("Login failed: " + error.message);
-        return;
+      } else {
+        window.location.href = "logger.html";
       }
-
-      const token = data.session.access_token;
-      console.log("Token received:", token);
-
-      window.location.href = `logger.html?token=${token}`;
     });
   </script>
 </body>

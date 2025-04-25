@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Logger</title>
+</head>
+<body>
+  <h1>Welcome to The Spark Logger</h1>
+  <div id="user-info">Loading user...</div>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+    import { SUPABASE_URL, SUPABASE_ANON_KEY } from './js/config.js';
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const token = new URLSearchParams(window.location.search).get('token');
+
+    if (!token) {
+      document.getElementById('user-info').innerText = "No token provided.";
+    } else {
+      (async () => {
+        try {
+          await supabase.auth.setSession({
+            access_token: token,
+            refresh_token: '' // Not needed for this flow
+          });
+
+          const { data: { user } } = await supabase.auth.getUser();
+
+          if (user) {
+            document.getElementById('user-info').innerText = `Logged in as: ${user.email}`;
+          } else {
+            document.getElementById('user-info').innerText = "Failed to fetch user.";
+          }
+        } catch (err) {
+          console.error("Logger error:", err);
+          document.getElementById('user-info').innerText = "Error loading user data.";
+        }
+      })();
+    }
+  </script>
+</body>
+</html>
