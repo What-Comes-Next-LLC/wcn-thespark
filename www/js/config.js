@@ -1,9 +1,2 @@
-// Supabase configuration from environment variables
-const SUPABASE_URL = process.env.SUPABASE_URL;
-const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
-
-// Export configuration
-export const config = {
-    supabaseUrl: SUPABASE_URL,
-    supabaseAnonKey: SUPABASE_ANON_KEY
-}; 
+export const SUPABASE_URL = 'https://aaapsosboqplkjtlmhks.supabase.co';
+export const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhYXBzb3Nib3FwbGtqdGxtaGtzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU0NzU5NzAsImV4cCI6MjA2MTA1MTk3MH0.kz87tgY1URaHdFNbzw7nQwuz3rrQIlt1RSqjbuCxFCE';

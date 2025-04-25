@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Spark - Sign In</title>
+    <style>
+        :root {
+            --wcn-primary: #216869;
+            --wcn-accent1: #49a078;
+            --wcn-accent2: #9cc5a1;
+            --wcn-text: #dce1de;
+            --wcn-dark: #000000;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background: radial-gradient(circle at top right, 
+                rgba(73, 160, 120, 0.1) 0%, 
+                rgba(33, 104, 105, 0.05) 50%, 
+                var(--wcn-dark) 100%
+            );
+            color: var(--wcn-text);
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 1rem;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 2rem;
+            background: rgba(33, 104, 105, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            border: 1px solid rgba(73, 160, 120, 0.2);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo-section img {
+            width: 120px;
+            height: auto;
+            margin-bottom: 1rem;
+            background: transparent;
+            border: none;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .auth-form {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: grid;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            color: var(--wcn-text);
+            font-weight: 500;
+        }
+
+        .auth-container input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid rgba(220, 225, 222, 0.2);
+            border-radius: 4px;
+            background: linear-gradient(135deg, rgba(33, 104, 105, 0.85), rgba(73, 160, 120, 0.85));
+            color: #000000;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .auth-container input::placeholder {
+            color: rgba(0, 0, 0, 0.6);
+        }
+
+        .auth-container input:focus {
+            outline: none;
+            border-color: rgba(220, 225, 222, 0.4);
+            background: linear-gradient(135deg, rgba(33, 104, 105, 0.9), rgba(73, 160, 120, 0.9));
+        }
+
+        .sign-in-btn {
+            background: linear-gradient(
+                135deg,
+                var(--wcn-primary) 0%,
+                var(--wcn-accent1) 100%
+            );
+            color: var(--wcn-text);
+            padding: 0.75rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .sign-in-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(73, 160, 120, 0.2);
+        }
+
+        .auth-links {
+            text-align: center;
+            margin-top: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .auth-links a {
+            color: var(--wcn-accent2);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s ease;
+            opacity: 0.9;
+        }
+
+        .auth-links a:hover {
+            color: var(--wcn-accent1);
+            opacity: 1;
+        }
+
+        .error-message {
+            color: #ff6b6b;
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        @media (max-width: 480px) {
+            .auth-container {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="logo-section">
+            <img src="assets/images/logo-official.png" alt="The Spark Logo">
+        </div>
+        <form class="auth-form" id="authForm">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit" class="sign-in-btn">Sign In</button>
+            <div class="error-message" id="errorMessage"></div>
+        </form>
+        <div class="auth-links">
+            <a href="#" id="forgotPassword" class="forgot-password">Forgot Password?</a>
+            <a href="onboard.html" class="create-account">New here? Create an account</a>
+        </div>
+    </div>
+
+    <script type="module" src="js/auth-service.js"></script>
+    <script type="module" src="js/webview-bridge.js"></script>
+    <script type="module">
+        import { authService } from './js/auth-service.js';
+        import { webViewBridge } from './js/webview-bridge.js';
+
+        document.getElementById('authForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('errorMessage');
+
+            try {
+                const { data, error } = await authService.signIn(email, password);
+                if (error) throw error;
+                
+                // Store token securely
+                await webViewBridge.sendMessage('storeToken', { token: data.session.access_token });
+                
+                // Notify native app of successful authentication
+                await webViewBridge.sendMessage('authSuccess', { 
+                    message: 'Authentication successful',
+                    user: data.user 
+                });
+            } catch (error) {
+                errorMessage.textContent = error.message;
+                errorMessage.style.display = 'block';
+            }
+        });
+
+        document.getElementById('forgotPassword').addEventListener('click', async (e) => {
+            e.preventDefault();
+            await webViewBridge.sendMessage('forgotPassword', { 
+                message: 'Forgot password requested' 
+            });
+        });
+    </script>
+</body>
+</html> 

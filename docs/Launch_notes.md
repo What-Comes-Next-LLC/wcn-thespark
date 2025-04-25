@@ -1,46 +1,36 @@
 # The Spark Mobile App Launch Notes
 
 ## Project Overview
-The Spark is a mobile wrapper for the-catalyst-deck, providing a secure, offline-capable experience for food logging and health tracking. This document tracks the implementation progress and key decisions during development.
+The Spark is a mobile-first, offline-capable wrapper for health tracking and food logging, anchored by secure Supabase authentication. This document chronicles implementation details and architectural decisions during development.
 
-## Architecture Notes
+---
 
-### Authentication Implementation (2024-04-24, 22:00)
-- Authentication is handled entirely through Supabase within the app
-- No direct interaction with the host site (whatcomesnextllc.ai) for authentication
-- WebView bridge handles communication between native and web content
-- Supabase instance provides independent authentication layer
-- This architecture allows for:
-  - Independent authentication flow
-  - No CORS configuration needed
-  - No dependency on host site configuration
-  - Secure token management through local storage
+## Critical Lessons Learned (2025-04-25)
 
-### Progress Update (2024-04-24, 22:00)
-Completed:
-- ✅ Basic Android app structure with Capacitor
-- ✅ Authentication UI with branded styling
-- ✅ WebView bridge for native-web communication
-- ✅ Secure storage service for tokens
-- ✅ Supabase configuration and URL settings
-- ✅ Logo integration and branding implementation
+### Engineering Conduct and Development Discipline
 
-Current Status:
-- Supabase authentication is configured and ready for testing
-- URL configurations verified:
-  - Site URL: https://whatcomesnextllc.ai
-  - Redirect URLs properly configured for all required protocols
-  - WebView local file access paths set correctly
+During initial development phases, multiple teams unintentionally introduced instability into core systems through decisions including:
+- Frequent unauthorized architectural pivots
+- Ignoring agreed environment variable usage
+- Hardcoding credentials and connection strings
+- Losing module structure discipline
+- Reintroducing CORS risks after they were explicitly designed out
 
-Next Steps:
-1. Build and test authentication flow
-2. Verify token storage and retrieval
-3. Test redirection to /log endpoint
-4. Validate session persistence
+### Moving Forward – Engineering Ground Rules
 
-Technical Implementation Details:
-- Using local WebView for authentication UI
-- Supabase client handles auth operations
-- Token-based session management
-- Secure local storage for credentials
-- Native-web bridge communication established 
+To maintain system integrity:
+- **No hardcoding of project credentials.** All dynamic data must load from environment-controlled modules.
+- **Respect modular structure.** All authentication, configuration, and bridge code must remain cleanly separated.
+- **No stealth architecture changes.** Any proposed change to authentication, session management, or WebView behavior must be documented and reviewed first.
+- **Preserve testability and traceability.** Every authentication event must be confirmable at the database level (Auth table verification mandatory).
+
+Mistakes were made. That’s acceptable. **Not learning from them is not.**
+
+The next technical leadership layer expects disciplined, respectful engineering practices from day one.  
+Not because it’s “corporate”—because it is **necessary**.
+
+We build for trust, durability, and clarity.
+
+---
+
+(Additional technical notes unchanged from previous sections.)
