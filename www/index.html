@@ -16,19 +16,36 @@
     }
 
     body {
+      min-height: 100vh;
       margin: 0;
-      background: var(--wcn-dark);
+      background: linear-gradient(135deg, #216869 0%, #49a078 100%);
       display: flex;
       align-items: center;
       justify-content: center;
       height: 100vh;
       overflow: hidden;
+      position: relative;
+    }
+    .background-watermark {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      width: 70vw;
+      max-width: 600px;
+      min-width: 200px;
+      transform: translate(-50%, -50%);
+      opacity: 0.15;
+      mix-blend-mode: overlay;
+      pointer-events: none;
+      z-index: 0;
     }
     .logo {
       width: 60%;
       max-width: 400px;
       filter: drop-shadow(0 0 15px rgba(73, 160, 120, 0.3));
       animation: pulseAndFade 2.5s ease-in-out;
+      pointer-events: none;
+      z-index: 1;
     }
     @keyframes pulseAndFade {
       0% { opacity: 0; transform: scale(0.95); }
@@ -38,6 +55,7 @@
   </style>
 </head>
 <body>
+  <img class="background-watermark" src="./assets/images/logo-official.png" alt="Watermark" />
   <img class="logo" src=".\assets\images\logo-official.png" alt="What Comes Next Logo" />
   <script>
     setTimeout(() => {
