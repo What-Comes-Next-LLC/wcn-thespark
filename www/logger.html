@@ -5,11 +5,22 @@
   <title>Logger - The Spark</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
+    :root {
+      --wcn-primary: #216869;
+      --wcn-accent1: #49a078;
+      --wcn-accent2: #9cc5a1;
+      --wcn-text: #dce1de;
+      --wcn-dark: #000000;
+      --glass-bg: rgba(33, 104, 105, 0.15);
+      --input-bg: rgba(0, 0, 0, 0.3);
+      --text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+
     body {
       margin: 0;
-      background-color: #216869;
-      font-family: 'Helvetica Neue', sans-serif;
-      color: #dce1de;
+      background: var(--wcn-dark);
+      font-family: 'Inter', 'Helvetica Neue', sans-serif;
+      color: var(--wcn-text);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -18,9 +29,18 @@
     }
     h1 {
       margin-bottom: 2rem;
+      color: var(--wcn-text);
+      text-shadow: var(--text-shadow);
+      text-align: center;
+      border-bottom: 1px solid rgba(156, 197, 161, 0.2);
+      padding-bottom: 0.5rem;
     }
     .button {
-      background-color: #49a078;
+      background: linear-gradient(
+        135deg,
+        var(--wcn-primary) 0%,
+        var(--wcn-accent1) 100%
+      );
       border: none;
       color: white;
       padding: 1rem 2rem;
@@ -28,12 +48,15 @@
       border-radius: 8px;
       font-size: 1.2rem;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
       width: 80%;
       max-width: 300px;
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(156, 197, 161, 0.15);
     }
     .button:hover {
-      background-color: #9cc5a1;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(73, 160, 120, 0.2);
     }
     input[type="file"] {
       display: none;
@@ -41,7 +64,7 @@
   </style>
 </head>
 <body>
-  <h1>Welcome to The Spark Logger</h1>
+  <h1>Track Your Progress, Build Your Future</h1>
   <button id="uploadBtn" class="button">📁 Upload a File</button>
   <input type="file" id="fileInput" accept="image/*" />
 

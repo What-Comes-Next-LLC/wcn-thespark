@@ -5,65 +5,94 @@
   <title>Login - The Spark</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
+    :root {
+      --wcn-primary: #216869;
+      --wcn-accent1: #49a078;
+      --wcn-accent2: #9cc5a1;
+      --wcn-text: #dce1de;
+      --wcn-dark: #000000;
+      --glass-bg: rgba(33, 104, 105, 0.15);
+      --input-bg: rgba(0, 0, 0, 0.3);
+      --text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+
     body {
       margin: 0;
-      background-color: #216869;
-      font-family: 'Helvetica Neue', sans-serif;
+      background: var(--wcn-dark);
+      font-family: 'Inter', 'Helvetica Neue', sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       height: 100vh;
-      color: #dce1de;
+      color: var(--wcn-text);
     }
     .logo {
       width: 140px;
       margin-bottom: 1rem;
+      filter: drop-shadow(0 0 15px rgba(73, 160, 120, 0.3));
     }
     .form-container {
-      background: rgba(0, 0, 0, 0.2);
+      background: var(--glass-bg);
       padding: 2rem;
       border-radius: 12px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
       width: 90%;
       max-width: 400px;
+      border: 1px solid rgba(156, 197, 161, 0.15);
     }
     .form-container h2 {
       margin-top: 0;
       margin-bottom: 1rem;
       font-size: 1.4rem;
       text-align: center;
+      color: var(--wcn-text);
+      text-shadow: var(--text-shadow);
+      border-bottom: 1px solid rgba(156, 197, 161, 0.2);
     }
     input[type="email"],
     input[type="password"] {
       width: 100%;
       padding: 0.75rem;
       margin-bottom: 1rem;
-      border: none;
+      border: 1px solid rgba(156, 197, 161, 0.2);
       border-radius: 6px;
       font-size: 1rem;
+      background: var(--input-bg);
+      color: var(--wcn-text);
+      backdrop-filter: blur(8px);
+    }
+    input:focus {
+      outline: none;
+      border-color: var(--wcn-accent1);
+      background: rgba(0, 0, 0, 0.4);
     }
     button {
       width: 100%;
       padding: 0.75rem;
       font-size: 1rem;
-      background-color: #49a078;
+      background: linear-gradient(
+        135deg,
+        var(--wcn-primary) 0%,
+        var(--wcn-accent1) 100%
+      );
       border: none;
       color: white;
       border-radius: 6px;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
     button:hover {
-      background-color: #9cc5a1;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(73, 160, 120, 0.2);
     }
   </style>
 </head>
 <body>
   <img class="logo" src="./assets/images/logo-official.png" alt="Logo" />
   <div class="form-container">
-    <h2>Welcome back</h2>
+    <h2>Welcome back to your journey</h2>
     <form id="login-form">
       <input type="email" id="email" placeholder="Email" required />
       <input type="password" id="password" placeholder="Password" required />
